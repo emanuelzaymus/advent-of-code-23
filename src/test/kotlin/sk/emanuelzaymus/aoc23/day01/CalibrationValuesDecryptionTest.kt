@@ -1,4 +1,4 @@
-package sk.emanuelzaymus.aoc23.day1
+package sk.emanuelzaymus.aoc23.day01
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

@@ -1,4 +1,4 @@
-package sk.emanuelzaymus.aoc23.day1
+package sk.emanuelzaymus.aoc23.day01
 
 import java.io.File
 
@@ -16,7 +16,7 @@ val digitAndWordNumberMap = digitNumberMap + wordNumberMap
  * https://adventofcode.com/2023/day/1
  */
 private fun main() {
-    val lines = File("data/day1.txt").readLines()
+    val lines = File("data/day01.txt").readLines()
 
     val sum = sumOfDecryptedValues(lines, digitNumberMap)
     println("Problem 1: $sum") // 55971
