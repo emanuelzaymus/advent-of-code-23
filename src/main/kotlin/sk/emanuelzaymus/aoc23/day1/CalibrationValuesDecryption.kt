@@ -12,7 +12,9 @@ private val wordNumberMap = mapOf(
 
 val digitAndWordNumberMap = digitNumberMap + wordNumberMap
 
-/** https://adventofcode.com/2023/day/1 */
+/**
+ * https://adventofcode.com/2023/day/1
+ */
 private fun main() {
     val lines = File("data/day1.txt").readLines()
 
@@ -54,7 +56,9 @@ private fun String.findLastNumber(numberMap: Map<String, Int>): Int {
         .value
 }
 
-/** First solution of Problem 1 */
+/**
+ * First solution of Problem 1
+ */
 fun simpleSumOfDecryptedValues(values: List<String>): Int {
     return values
         .map {
