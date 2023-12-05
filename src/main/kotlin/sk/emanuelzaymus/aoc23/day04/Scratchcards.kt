@@ -7,7 +7,7 @@ import kotlin.math.pow
  * https://adventofcode.com/2023/day/4
  */
 private fun main() {
-    val lines = File("data/day02.txt").readLines()
+    val lines = File("data/day04.txt").readLines()
 
     val sum = sumOfScratchcardPoints(lines)
 
