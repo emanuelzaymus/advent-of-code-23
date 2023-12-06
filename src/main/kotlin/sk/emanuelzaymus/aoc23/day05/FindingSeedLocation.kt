@@ -41,7 +41,7 @@ fun determineSeedRequirements(lines: List<String>, withRanges: Boolean): List<Se
     return requirements
 }
 
-fun parseSeeds(firstLine: String, withRanges: Boolean): List<Long> {
+private fun parseSeeds(firstLine: String, withRanges: Boolean): List<Long> {
     val seeds = firstLine
         .substringAfter(": ")
         .split(' ')
