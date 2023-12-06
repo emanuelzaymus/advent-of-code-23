@@ -14,11 +14,6 @@ private fun main() {
     println("Problem 2: $lowestLocationWithRanges") // java.lang.OutOfMemoryError: Java heap space
 }
 
-data class SeedRequirements(
-    val seed: Long,
-    val requirements: MutableList<Long> = mutableListOf(),
-)
-
 fun findLowestLocationNumber(lines: List<String>, withRanges: Boolean): Long {
     val seedRequirements = determineSeedRequirements(lines, withRanges)
 
@@ -46,7 +41,7 @@ fun determineSeedRequirements(lines: List<String>, withRanges: Boolean): List<Se
     return requirements
 }
 
-private fun parseSeeds(firstLine: String, withRanges: Boolean): List<Long> {
+fun parseSeeds(firstLine: String, withRanges: Boolean): List<Long> {
     val seeds = firstLine
         .substringAfter(": ")
         .split(' ')
@@ -64,7 +59,7 @@ private fun parseSeeds(firstLine: String, withRanges: Boolean): List<Long> {
     return seeds
 }
 
-private fun parseRequirementMappings(restOfLines: List<String>): List<RequirementMapping> {
+fun parseRequirementMappings(restOfLines: List<String>): List<RequirementMapping> {
     val contentLines = restOfLines
         .filter { it.isNotBlank() }
 
@@ -86,25 +81,4 @@ private fun parseRequirementMappings(restOfLines: List<String>): List<Requiremen
     }
 
     return mappings
-}
-
-private class RequirementMapping {
-    val ranges = mutableListOf<MappingRange>()
-    fun mapToDestinationRequirement(source: Long): Long {
-        ranges.forEach { range ->
-            if (source in range) {
-                return range.map(source)
-            }
-        }
-        return source
-    }
-}
-
-data class MappingRange(val destinationStart: Long, val sourceStart: Long, val rangeLength: Long) {
-    operator fun contains(source: Long): Boolean = source in sourceStart..sourceStart + rangeLength
-
-    fun map(source: Long): Long {
-        val startOffset = source - sourceStart
-        return destinationStart + startOffset
-    }
 }
