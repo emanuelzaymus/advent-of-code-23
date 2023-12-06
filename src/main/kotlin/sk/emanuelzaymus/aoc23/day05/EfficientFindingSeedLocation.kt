@@ -9,34 +9,49 @@ private fun main() {
 
     println("Problem 1: $lowestLocation") // 910845529
 
-    val lowestLocationWithRanges = findLowestLocationNumberEfficiently(lines, true)
+    val lowestLocationWithRangeLengths = findLowestLocationNumberEfficiently(lines, true)
 
-    println("Problem 2: $lowestLocationWithRanges") // java.lang.OutOfMemoryError: Java heap space
+    println("Problem 2: $lowestLocationWithRangeLengths") // 77435348
 }
 
-fun findLowestLocationNumberEfficiently(lines: List<String>, withRanges: Boolean): Long {
-    val seedRequirements = determineSeedRequirementsEfficiently(lines, withRanges)
-
-    return seedRequirements.minOf {
-        it.requirements.last()
-    }
-}
-
-fun determineSeedRequirementsEfficiently(lines: List<String>, withRanges: Boolean): List<SeedRequirements> {
-    val seeds = parseSeeds(lines.first(), withRanges)
+fun findLowestLocationNumberEfficiently(lines: List<String>, withRangeLengths: Boolean): Long {
+    val seedRanges = parseSeedsRanges(lines.first(), withRangeLengths)
     val mappings = parseRequirementMappings(lines.drop(1))
 
-    val requirements = seeds.map { SeedRequirements(it) }
+    var lowestLocation = Long.MAX_VALUE
 
-    for (seedRequirement in requirements) {
-        for ((index, mapping) in mappings.withIndex()) {
+    for (range in seedRanges) {
+        for (seed in range) {
+            var lastSeedRequirement = seed
 
-            val source = if (index == 0) seedRequirement.seed
-            else seedRequirement.requirements[index - 1]
+            for (mapping in mappings) {
+                lastSeedRequirement = mapping.mapToDestinationRequirement(lastSeedRequirement)
+            }
 
-            seedRequirement.requirements += mapping.mapToDestinationRequirement(source)
+            if (lastSeedRequirement < lowestLocation) {
+                lowestLocation = lastSeedRequirement
+                println(lowestLocation)
+            }
         }
     }
 
-    return requirements
+    return lowestLocation
+}
+
+private fun parseSeedsRanges(firstLine: String, withRangeLengths: Boolean): List<LongRange> {
+    val seeds = firstLine
+        .substringAfter(": ")
+        .split(' ')
+        .map { it.toLong() }
+
+    if (withRangeLengths) {
+        return seeds
+            .chunked(2) {
+                val (start, rangeLength) = it
+                start..start + rangeLength
+            }
+    }
+
+    return seeds
+        .map { it..it }
 }
