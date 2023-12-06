@@ -43,15 +43,22 @@ class FindingSeedLocationTest {
     """.trimIndent()
 
     @Test
-    fun findLowestLocationNumber() {
-        val lowestLocation = findLowestLocationNumber(inputData.lines())
+    fun `findLowestLocationNumber - without seed ranges - should return 35`() {
+        val lowestLocation = findLowestLocationNumber(inputData.lines(), false)
 
         assertEquals(35, lowestLocation)
     }
 
     @Test
+    fun `findLowestLocationNumber - with seed ranges - should return 46`() {
+        val lowestLocation = findLowestLocationNumber(inputData.lines(), true)
+
+        assertEquals(46, lowestLocation)
+    }
+
+    @Test
     fun determineSeedRequirements() {
-        val seedRequirements = determineSeedRequirements(inputData.lines())
+        val seedRequirements = determineSeedRequirements(inputData.lines(), false)
 
         val expected = listOf(
             SeedRequirements(79, mutableListOf(81, 81, 81, 74, 78, 78, 82)),

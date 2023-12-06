@@ -5,9 +5,13 @@ import java.io.File
 private fun main() {
     val lines = File("data/day05.txt").readLines()
 
-    val lowestLocation = findLowestLocationNumber(lines)
+    val lowestLocation = findLowestLocationNumber(lines, false)
 
     println("Problem 1: $lowestLocation") // 910845529
+
+    val lowestLocationWithRanges = findLowestLocationNumber(lines, true)
+
+    println("Problem 2: $lowestLocationWithRanges") // java.lang.OutOfMemoryError: Java heap space
 }
 
 data class SeedRequirements(
@@ -15,16 +19,16 @@ data class SeedRequirements(
     val requirements: MutableList<Long> = mutableListOf(),
 )
 
-fun findLowestLocationNumber(lines: List<String>): Long {
-    val seedRequirements = determineSeedRequirements(lines)
+fun findLowestLocationNumber(lines: List<String>, withRanges: Boolean): Long {
+    val seedRequirements = determineSeedRequirements(lines, withRanges)
 
     return seedRequirements.minOf {
         it.requirements.last()
     }
 }
 
-fun determineSeedRequirements(lines: List<String>): List<SeedRequirements> {
-    val seeds = parseSeeds(lines.first())
+fun determineSeedRequirements(lines: List<String>, withRanges: Boolean): List<SeedRequirements> {
+    val seeds = parseSeeds(lines.first(), withRanges)
     val mappings = parseRequirementMappings(lines.drop(1))
 
     val requirements = seeds.map { SeedRequirements(it) }
@@ -42,11 +46,22 @@ fun determineSeedRequirements(lines: List<String>): List<SeedRequirements> {
     return requirements
 }
 
-private fun parseSeeds(firstLine: String): List<Long> {
-    return firstLine
+private fun parseSeeds(firstLine: String, withRanges: Boolean): List<Long> {
+    val seeds = firstLine
         .substringAfter(": ")
         .split(' ')
         .map { it.toLong() }
+
+    if (withRanges) {
+        return seeds
+            .chunked(2) {
+                val (start, length) = it
+                (start..start + length).toList()
+            }
+            .flatten()
+    }
+
+    return seeds
 }
 
 private fun parseRequirementMappings(restOfLines: List<String>): List<RequirementMapping> {
