@@ -2,6 +2,9 @@ package sk.emanuelzaymus.aoc23.day05
 
 import java.io.File
 
+/**
+ * https://adventofcode.com/2023/day/5
+ */
 private fun main() {
     val lines = File("data/day05.txt").readLines()
 
