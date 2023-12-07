@@ -12,10 +12,14 @@ private fun main() {
     val multiple = multiplyNumberOfWaysToWinTheRace(lines)
 
     println("Problem 1: $multiple") // 608902
+
+    val singleRaceOptionCount = multiplyNumberOfWaysToWinTheRace(lines, singleRace = true)
+
+    println("Problem 2: $singleRaceOptionCount") // 46173809
 }
 
-fun multiplyNumberOfWaysToWinTheRace(lines: List<String>): Int {
-    return parseRaces(lines)
+fun multiplyNumberOfWaysToWinTheRace(lines: List<String>, singleRace: Boolean = false): Int {
+    return parseRaces(lines, singleRace)
         .map { timeAndDistance ->
             calculateNumberOfWaysToWinTheRace(timeAndDistance)
         }
@@ -30,7 +34,7 @@ fun calculateNumberOfWaysToWinTheRace(race: Race): Int {
 fun calculateWinningOptionsForRace(race: Race): List<WinningOption> {
     val (raceTime, recordDistance) = race
 
-    fun calculateSpeed(buttonDownTime: Int): Int = buttonDownTime
+    fun calculateSpeed(buttonDownTime: Long) = buttonDownTime
 
     return (1..<raceTime)
         .map { buttonDownTime ->
@@ -45,18 +49,22 @@ fun calculateWinningOptionsForRace(race: Race): List<WinningOption> {
         }
 }
 
-data class Race(val raceTime: Int, val recordDistance: Int)
+data class Race(val raceTime: Long, val recordDistance: Long)
 
-data class WinningOption(val buttonDownTime: Int, val traveledDistance: Int)
+data class WinningOption(val buttonDownTime: Long, val traveledDistance: Long)
 
-private fun parseRaces(lines: List<String>): List<Race> {
+private fun parseRaces(lines: List<String>, singleRace: Boolean): List<Race> {
     val (raceTimes, recordDistances) =
         lines
             .map { line ->
                 line.substringAfter(":")
                     .split(' ')
                     .filter { it.isNotBlank() }
-                    .map { it.toInt() }
+                    .let { stringNumbers ->
+                        if (singleRace) listOf(stringNumbers.joinToString(separator = ""))
+                        else stringNumbers
+                    }
+                    .map { it.toLong() }
             }
 
     return raceTimes

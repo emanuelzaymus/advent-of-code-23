@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.*
 class BoatRacesTest {
 
     @Test
-    fun multiplyNumberOfWaysToWinTheRace() {
+    fun `multiplyNumberOfWaysToWinTheRace - multiple races - should return correct result`() {
         val actual = multiplyNumberOfWaysToWinTheRace(
             listOf(
                 "Time:      7  15   30",
@@ -16,6 +16,19 @@ class BoatRacesTest {
         )
 
         assertEquals(288, actual)
+    }
+
+    @Test
+    fun `multiplyNumberOfWaysToWinTheRace - single race - should return correct result`() {
+        val actual = multiplyNumberOfWaysToWinTheRace(
+            listOf(
+                "Time:      7  15   30",
+                "Distance:  9  40  200",
+            ),
+            singleRace = true
+        )
+
+        assertEquals(71503, actual)
     }
 
     @Test
