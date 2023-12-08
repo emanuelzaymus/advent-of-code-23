@@ -20,7 +20,7 @@ private fun main() {
 fun getTotalWinningOfRankedHands(lines: List<String>, withJokers: Boolean = false): Int {
     return parseCardHands(lines, withJokers)
         .sortByRankAscending()
-        .onEachIndexed { i, cardHand -> println("$i -> $cardHand") }
+//        .onEachIndexed { i, cardHand -> println("$i -> $cardHand") }
         .map { it.bid }
         .reduceIndexed { index, acc, cardBid ->
             acc + cardBid * (index + 1)

@@ -11,17 +11,23 @@ enum class RankType(val strength: Int) {
 
     companion object {
         fun determineRankType(cards: String, withJokers: Boolean): RankType {
-            return if (withJokers) determineRankTypeWithJokers(cards)
-            else determineRankType(cards)
-        }
+            var jokerCount: Int
 
-        private fun determineRankType(cards: String): RankType {
             val cardCounts = cards
                 .groupingBy { it }
                 .eachCount()
+                .let { map ->
+                    jokerCount = map.getOrDefault('J', 0)
+                    if (withJokers) map - 'J' else map
+                }
                 .map { it.value }
                 .sortedDescending()
 
+            return if (withJokers && jokerCount > 0) determineRankTypeWithCardCountsAndJokers(cardCounts, jokerCount)
+            else determineRankTypeWithCardCounts(cardCounts)
+        }
+
+        private fun determineRankTypeWithCardCounts(cardCounts: List<Int>): RankType {
             return when (cardCounts.size) {
                 1 -> FIVE_OF_A_KIND
                 2 -> if (cardCounts.first() == 4) FOUR_OF_A_KIND else FULL_HOUSE
@@ -32,67 +38,15 @@ enum class RankType(val strength: Int) {
             }
         }
 
-        private fun determineRankTypeWithJokers(cards: String): RankType {
-            var jokerCount: Int
-
-            val cardCounts = cards
-                .groupingBy { it }
-                .eachCount()
-                .let { map ->
-                    jokerCount = map.getOrDefault('J', 0)
-                    map - 'J'
-                }
-                .map { it.value }
-                .sortedDescending()
-
-            if (jokerCount == 0) {
-                return when (cardCounts.size) {
-                    1 -> FIVE_OF_A_KIND
-                    2 -> if (cardCounts.first() == 4) FOUR_OF_A_KIND else FULL_HOUSE
-                    3 -> if (cardCounts.first() == 3) THREE_OF_A_KIND else TWO_PAIRS
-                    4 -> ONE_PAIR
-                    5 -> HIGH_CARD
-                    else -> throw UnexpectedCardCountException(cardCounts)
-                }
-            }
-
-            val firstCardCount by lazy { cardCounts.first() }
-
+        private fun determineRankTypeWithCardCountsAndJokers(cardCounts: List<Int>, jokerCount: Int): RankType {
             return when (cardCounts.size) {
-                0 -> FIVE_OF_A_KIND
-
-                1 -> when {
-                    firstCardCount == 4 && jokerCount == 1 -> FIVE_OF_A_KIND
-                    firstCardCount == 3 && jokerCount == 2 -> FIVE_OF_A_KIND
-                    firstCardCount == 2 && jokerCount == 3 -> FIVE_OF_A_KIND
-                    firstCardCount == 1 && jokerCount == 4 -> FIVE_OF_A_KIND
-                    firstCardCount == 0 && jokerCount == 5 -> FIVE_OF_A_KIND
-                    else -> throw UnexpectedCardCountException(cardCounts, jokerCount)
-                }
-
-                2 -> when {
-                    firstCardCount == 3 /* 1 */ && jokerCount == 1 -> FOUR_OF_A_KIND
-                    firstCardCount == 2 /* 2 */ && jokerCount == 1 -> FULL_HOUSE
-                    firstCardCount == 2 /* 1 */ && jokerCount == 2 -> FOUR_OF_A_KIND
-                    firstCardCount == 1 /* 1 */ && jokerCount == 3 -> FOUR_OF_A_KIND
-                    else -> throw UnexpectedCardCountException(cardCounts, jokerCount)
-                }
-
-                3 -> when {
-                    firstCardCount == 2 /* 1 1 */ && jokerCount == 1 -> THREE_OF_A_KIND
-                    firstCardCount == 1 /* 1 1 */ && jokerCount == 2 -> THREE_OF_A_KIND
-                    else -> throw UnexpectedCardCountException(cardCounts, jokerCount)
-                }
-
-                4 -> when {
-                    firstCardCount == 1 /* 1 1 1 */ && jokerCount == 1 -> ONE_PAIR
-                    else -> throw UnexpectedCardCountException(cardCounts, jokerCount)
-                }
-
+                0, 1 -> FIVE_OF_A_KIND
+                2 -> if (cardCounts.first() == 2 && jokerCount == 1) FULL_HOUSE else FOUR_OF_A_KIND
+                3 -> THREE_OF_A_KIND
+                4 -> ONE_PAIR
                 else -> throw UnexpectedCardCountException(cardCounts, jokerCount)
             }
         }
-
     }
 
     class UnexpectedCardCountException(cardCounts: List<Int>, jokerCount: Int? = null) :
