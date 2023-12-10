@@ -12,22 +12,22 @@ data class Position(val tile: Tile, val x: Int, val y: Int) {
             return false
         }
         return when {
-            isToNorth(other) -> when (tile) {
+            isToDirection(Direction.NORTH, other) -> when (tile) {
                 START, VERTICAL, NORTH_EAST, NORTH_WEST -> t == START || t == VERTICAL || t == SOUTH_WEST || t == SOUTH_EAST
                 else -> false
             }
 
-            isToSouth(other) -> when (tile) {
+            isToDirection(Direction.SOUTH, other) -> when (tile) {
                 START, VERTICAL, SOUTH_WEST, SOUTH_EAST -> t == START || t == VERTICAL || t == NORTH_EAST || t == NORTH_WEST
                 else -> false
             }
 
-            isToEast(other) -> when (tile) {
+            isToDirection(Direction.EAST, other) -> when (tile) {
                 START, HORIZONTAL, NORTH_EAST, SOUTH_EAST -> t == START || t == HORIZONTAL || t == SOUTH_WEST || t == NORTH_WEST
                 else -> false
             }
 
-            isToWest(other) -> when (tile) {
+            isToDirection(Direction.WEST, other) -> when (tile) {
                 START, HORIZONTAL, NORTH_WEST, SOUTH_WEST -> t == START || t == HORIZONTAL || t == SOUTH_EAST || t == NORTH_EAST
                 else -> false
             }
@@ -36,12 +36,9 @@ data class Position(val tile: Tile, val x: Int, val y: Int) {
         }
     }
 
-    private fun isToNorth(other: Position): Boolean = x > other.x && y == other.y
-
-    private fun isToSouth(other: Position): Boolean = x < other.x && y == other.y
-
-    private fun isToEast(other: Position): Boolean = x == other.x && y < other.y
-
-    private fun isToWest(other: Position): Boolean = x == other.x && y > other.y
+    private fun isToDirection(direction: Direction, other: Position): Boolean {
+        return direction.shiftX(x) == other.x
+            && direction.shiftY(y) == other.y
+    }
 
 }

@@ -6,7 +6,9 @@ import java.io.File
 private typealias Maze = Array<CharArray>
 
 private fun main() {
-    val stepCount = findNumberOfStepsFromStartToFarthestPoint(File("data/day10.txt").readText())
+    val inputMaze = File("data/day10.txt").readText()
+
+    val stepCount = findNumberOfStepsFromStartToFarthestPoint(inputMaze)
 
     println("Problem 1: $stepCount") // 6942
 }
@@ -20,15 +22,11 @@ fun findNumberOfStepsFromStartToFarthestPoint(inputMaze: String): Int {
     var stepCount = 0
 
     while (true) {
-        findNextPosition(maze, currentPosition, lastPosition)
-            .also { newPosition ->
-                lastPosition = currentPosition
-                currentPosition = newPosition
-            }
+        val newPosition = findNextPosition(maze, currentPosition, lastPosition)
+        lastPosition = currentPosition
+        currentPosition = newPosition
 
         stepCount++
-        println("New step count: $stepCount")
-        println("Current position: $currentPosition")
 
         if (currentPosition == startPosition) {
             break
@@ -40,59 +38,35 @@ fun findNumberOfStepsFromStartToFarthestPoint(inputMaze: String): Int {
 }
 
 private fun findNextPosition(maze: Maze, currentPosition: Position, lastPosition: Position?): Position {
-    val northPosition = maze.getPositionToNorth(currentPosition)
-    if (northPosition != null && currentPosition.isConnectingTo(northPosition) && northPosition != lastPosition) {
-        return northPosition
-    }
+    for (direction in Direction.entries) {
+        val nextPosition = maze.getPositionTo(direction, currentPosition)
 
-    val southPosition = maze.getPositionToSouth(currentPosition)
-    if (southPosition != null && currentPosition.isConnectingTo(southPosition) && southPosition != lastPosition) {
-        return southPosition
-    }
-
-    val eastPosition = maze.getPositionToEast(currentPosition)
-    if (eastPosition != null && currentPosition.isConnectingTo(eastPosition) && eastPosition != lastPosition) {
-        return eastPosition
-    }
-
-    val westPosition = maze.getPositionToWest(currentPosition)
-    if (westPosition != null && currentPosition.isConnectingTo(westPosition) && westPosition != lastPosition) {
-        return westPosition
+        if (
+            nextPosition != null
+            && currentPosition.isConnectingTo(nextPosition)
+            && nextPosition != lastPosition
+        ) {
+            return nextPosition
+        }
     }
 
     throw IllegalStateException("No next position found from current position: $currentPosition.")
 }
 
-private fun Maze.getPositionToNorth(fromPosition: Position): Position? {
-    val (_, x, y) = fromPosition
-    if (x - 1 < 0) {
+private fun Maze.getPositionTo(direction: Direction, fromPosition: Position): Position? {
+    val newX = direction.shiftX(fromPosition.x)
+    val newY = direction.shiftY(fromPosition.y)
+
+    if (!isPositionInside(newX, newY)) {
         return null
     }
-    return Position(this[x - 1][y], x - 1, y)
+
+    return Position(this[newX][newY], newX, newY)
 }
 
-private fun Maze.getPositionToSouth(fromPosition: Position): Position? {
-    val (_, x, y) = fromPosition
-    if (x + 1 >= size) {
-        return null
-    }
-    return Position(this[x + 1][y], x + 1, y)
-}
-
-private fun Maze.getPositionToEast(fromPosition: Position): Position? {
-    val (_, x, y) = fromPosition
-    if (y + 1 >= this[x].size) {
-        return null
-    }
-    return Position(this[x][y + 1], x, y + 1)
-}
-
-private fun Maze.getPositionToWest(fromPosition: Position): Position? {
-    val (_, x, y) = fromPosition
-    if (y - 1 < 0) {
-        return null
-    }
-    return Position(this[x][y - 1], x, y - 1)
+private fun Maze.isPositionInside(x: Int, y: Int): Boolean {
+    return x in indices
+        && y in 0..<this[x].size
 }
 
 private fun findStartPosition(maze: Maze): Position {
@@ -103,13 +77,14 @@ private fun findStartPosition(maze: Maze): Position {
             }
         }
     }
+
     throw IllegalStateException("Maze does not contain start position.")
 }
 
 private fun readMaze(inputMaze: String): Maze {
     return inputMaze
         .lines()
-        .filterNot { it.isBlank() }
+        .filter { it.isNotBlank() }
         .map { it.toCharArray() }
         .toTypedArray()
 }

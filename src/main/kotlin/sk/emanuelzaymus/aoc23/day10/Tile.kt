@@ -1,6 +1,7 @@
 package sk.emanuelzaymus.aoc23.day10
 
 enum class Tile(val char: Char) {
+
     VERTICAL('|'),
     HORIZONTAL('-'),
     NORTH_EAST('L'),
