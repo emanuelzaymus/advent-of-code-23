@@ -45,3 +45,11 @@ private fun Maze.isPositionInside(x: Int, y: Int): Boolean {
     return x in indices
         && y in 0..<this[x].size
 }
+
+fun Maze.getNumberOfVisitedPositions(): Int {
+    return sumOf { row ->
+        row.count { position ->
+            position.visited
+        }
+    }
+}

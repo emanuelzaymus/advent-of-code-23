@@ -17,25 +17,30 @@ private fun main() {
 fun findNumberOfStepsFromStartToFarthestPoint(inputMaze: String): Int {
     val maze = readMaze(inputMaze)
 
+    traverseMazeLoop(maze)
+
+    val numberOfVisitedPositions = maze.getNumberOfVisitedPositions()
+
+    println("Number of visited positions: $numberOfVisitedPositions")
+    return numberOfVisitedPositions / 2
+}
+
+private fun traverseMazeLoop(maze: Maze) {
     val startPosition = maze.findStartPosition()
     var currentPosition = startPosition
     var lastPosition: Position? = null
-    var stepCount = 0
 
     while (true) {
         val newPosition = maze.findNextPosition(currentPosition, lastPosition)
+        newPosition.visited = true
+
         lastPosition = currentPosition
         currentPosition = newPosition
-
-        stepCount++
 
         if (currentPosition == startPosition) {
             break
         }
     }
-
-    println("Step count: $stepCount")
-    return stepCount / 2
 }
 
 fun findNumberOfEnclosedTiles(inputMaze: String): Int {

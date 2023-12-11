@@ -4,6 +4,8 @@ import sk.emanuelzaymus.aoc23.day10.Tile.*
 
 data class Position(val tile: Tile, val x: Int, val y: Int) {
 
+    var visited = false
+
     constructor(tile: Char, x: Int, y: Int) : this(Tile.of(tile), x, y)
 
     fun isConnectingTo(other: Position): Boolean {
