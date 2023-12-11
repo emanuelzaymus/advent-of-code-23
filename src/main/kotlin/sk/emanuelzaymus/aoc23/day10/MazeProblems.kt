@@ -3,7 +3,7 @@ package sk.emanuelzaymus.aoc23.day10
 import sk.emanuelzaymus.aoc23.day10.Tile.*
 import java.io.File
 
-private typealias Maze = Array<CharArray>
+private typealias Maze = Array<Array<Position>>
 
 private fun main() {
     val inputMaze = File("data/day10.txt").readText()
@@ -11,6 +11,14 @@ private fun main() {
     val stepCount = findNumberOfStepsFromStartToFarthestPoint(inputMaze)
 
     println("Problem 1: $stepCount") // 6942
+
+    val numberOfEnclosingTiles = findNumberOfEnclosedTiles(inputMaze)
+
+    println("Problem 2: $numberOfEnclosingTiles") //
+}
+
+fun findNumberOfEnclosedTiles(inputMaze: String): Int {
+    TODO("Not yet implemented")
 }
 
 fun findNumberOfStepsFromStartToFarthestPoint(inputMaze: String): Int {
@@ -61,7 +69,7 @@ private fun Maze.getPositionTo(direction: Direction, fromPosition: Position): Po
         return null
     }
 
-    return Position(this[newX][newY], newX, newY)
+    return this[newX][newY]
 }
 
 private fun Maze.isPositionInside(x: Int, y: Int): Boolean {
@@ -70,10 +78,10 @@ private fun Maze.isPositionInside(x: Int, y: Int): Boolean {
 }
 
 private fun findStartPosition(maze: Maze): Position {
-    maze.forEachIndexed { x, line ->
-        line.forEachIndexed { y, tile ->
-            if (tile == START.char) {
-                return Position(START, x, y)
+    maze.forEach { row ->
+        row.forEach { position ->
+            if (position.tile == START) {
+                return position
             }
         }
     }
@@ -85,6 +93,12 @@ private fun readMaze(inputMaze: String): Maze {
     return inputMaze
         .lines()
         .filter { it.isNotBlank() }
-        .map { it.toCharArray() }
+        .mapIndexed { x, row ->
+            row
+                .mapIndexed { y, char ->
+                    Position(char, x, y)
+                }
+                .toTypedArray()
+        }
         .toTypedArray()
 }
