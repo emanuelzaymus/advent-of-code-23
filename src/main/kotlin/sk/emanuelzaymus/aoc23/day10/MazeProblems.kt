@@ -2,6 +2,9 @@ package sk.emanuelzaymus.aoc23.day10
 
 import java.io.File
 
+/**
+ * https://adventofcode.com/2023/day/10
+ */
 private fun main() {
     val inputMaze = File("data/day10.txt").readText()
 
@@ -44,7 +47,11 @@ private fun traverseMazeLoop(maze: Maze) {
 }
 
 fun findNumberOfEnclosedTiles(inputMaze: String): Int {
-    TODO("Not yet implemented")
+    val maze = readMaze(inputMaze)
+
+    traverseMazeLoop(maze)
+
+    return 0
 }
 
 private fun readMaze(inputMaze: String): Maze {

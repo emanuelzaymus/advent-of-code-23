@@ -27,7 +27,7 @@ fun Maze.findNextPosition(currentPosition: Position, lastPosition: Position?): P
         }
     }
 
-    throw IllegalStateException("No next position found from current position: $currentPosition.")
+    error("No next position found from current position: $currentPosition.")
 }
 
 private fun Maze.getPositionTo(direction: Direction, fromPosition: Position): Position? {
