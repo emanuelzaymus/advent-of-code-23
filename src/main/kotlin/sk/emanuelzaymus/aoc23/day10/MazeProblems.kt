@@ -1,5 +1,6 @@
 package sk.emanuelzaymus.aoc23.day10
 
+import sk.emanuelzaymus.aoc23.day10.Tile.*
 import java.io.File
 
 /**
@@ -51,10 +52,43 @@ fun findNumberOfEnclosedTiles(inputMaze: String): Int {
 
     traverseMazeLoop(maze)
 
+    replaceStartPositions(maze)
+
+    val scaledMaze = upscaleMaze(maze)
+
     return 0
 }
 
-private fun readMaze(inputMaze: String): Maze {
+private fun replaceStartPositions(maze: Maze) {
+    val startPosition = maze.findStartPosition()
+
+    val toNorth = maze.getPositionTo(Direction.NORTH, startPosition)
+    val toSouth = maze.getPositionTo(Direction.SOUTH, startPosition)
+    val toEast = maze.getPositionTo(Direction.EAST, startPosition)
+    val toWest = maze.getPositionTo(Direction.WEST, startPosition)
+
+    val isConnectableToNorth = toNorth != null && startPosition.isConnectingTo(toNorth)
+    val isConnectableToSouth = toSouth != null && startPosition.isConnectingTo(toSouth)
+    val isConnectableToEast = toEast != null && startPosition.isConnectingTo(toEast)
+    val isConnectableToWest = toWest != null && startPosition.isConnectingTo(toWest)
+
+    val startReplacingPosition =
+        with(startPosition) {
+            when {
+                isConnectableToNorth && isConnectableToSouth -> copy(tile = VERTICAL)
+                isConnectableToEast && isConnectableToWest -> copy(tile = HORIZONTAL)
+                isConnectableToNorth && isConnectableToEast -> copy(tile = NORTH_EAST)
+                isConnectableToNorth && isConnectableToWest -> copy(tile = NORTH_WEST)
+                isConnectableToSouth && isConnectableToEast -> copy(tile = SOUTH_EAST)
+                isConnectableToSouth && isConnectableToWest -> copy(tile = SOUTH_WEST)
+                else -> error("Start position $startPosition is not connectable to any other positions.")
+            }
+        }
+
+    maze[startPosition.x][startPosition.y] = startReplacingPosition
+}
+
+fun readMaze(inputMaze: String): Maze {
     return inputMaze
         .lines()
         .filter { it.isNotBlank() }

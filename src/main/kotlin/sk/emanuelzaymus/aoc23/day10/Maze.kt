@@ -30,7 +30,7 @@ fun Maze.findNextPosition(currentPosition: Position, lastPosition: Position?): P
     error("No next position found from current position: $currentPosition.")
 }
 
-private fun Maze.getPositionTo(direction: Direction, fromPosition: Position): Position? {
+fun Maze.getPositionTo(direction: Direction, fromPosition: Position): Position? {
     val newX = direction.shiftX(fromPosition.x)
     val newY = direction.shiftY(fromPosition.y)
 
@@ -51,5 +51,11 @@ fun Maze.getNumberOfVisitedPositions(): Int {
         row.count { position ->
             position.visited
         }
+    }
+}
+
+fun Maze.asString() = joinToString("\n") { row ->
+    row.joinToString("") { position ->
+        position.tile.char.toString()
     }
 }

@@ -15,22 +15,22 @@ data class Position(val tile: Tile, val x: Int, val y: Int) {
         }
         return when {
             isToDirection(Direction.NORTH, other) -> when (tile) {
-                START, VERTICAL, NORTH_EAST, NORTH_WEST -> t == START || t == VERTICAL || t == SOUTH_WEST || t == SOUTH_EAST
+                START, VERTICAL, NORTH_EAST, NORTH_WEST -> t == START || t == VERTICAL || t == SOUTH_EAST || t == SOUTH_WEST
                 else -> false
             }
 
             isToDirection(Direction.SOUTH, other) -> when (tile) {
-                START, VERTICAL, SOUTH_WEST, SOUTH_EAST -> t == START || t == VERTICAL || t == NORTH_EAST || t == NORTH_WEST
+                START, VERTICAL, SOUTH_EAST, SOUTH_WEST -> t == START || t == VERTICAL || t == NORTH_EAST || t == NORTH_WEST
                 else -> false
             }
 
             isToDirection(Direction.EAST, other) -> when (tile) {
-                START, HORIZONTAL, NORTH_EAST, SOUTH_EAST -> t == START || t == HORIZONTAL || t == SOUTH_WEST || t == NORTH_WEST
+                START, HORIZONTAL, NORTH_EAST, SOUTH_EAST -> t == START || t == HORIZONTAL || t == NORTH_WEST || t == SOUTH_WEST
                 else -> false
             }
 
             isToDirection(Direction.WEST, other) -> when (tile) {
-                START, HORIZONTAL, NORTH_WEST, SOUTH_WEST -> t == START || t == HORIZONTAL || t == SOUTH_EAST || t == NORTH_EAST
+                START, HORIZONTAL, NORTH_WEST, SOUTH_WEST -> t == START || t == HORIZONTAL || t == NORTH_EAST || t == SOUTH_EAST
                 else -> false
             }
 
