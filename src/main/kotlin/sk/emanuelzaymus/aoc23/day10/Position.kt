@@ -2,11 +2,16 @@ package sk.emanuelzaymus.aoc23.day10
 
 import sk.emanuelzaymus.aoc23.day10.Tile.*
 
-data class Position(val tile: Tile, val x: Int, val y: Int) {
+data class Position(
+    val tile: Tile,
+    val x: Int,
+    val y: Int,
+    var isPath: Boolean = false,
+    var isVisited: Boolean = false,
+    var isEnclosedInTheLoop: Boolean? = null,
+) {
 
-    var visited = false
-
-    constructor(tile: Char, x: Int, y: Int) : this(Tile.of(tile), x, y)
+    constructor(tile: Char, x: Int, y: Int, isPath: Boolean = false) : this(Tile.of(tile), x, y, isPath)
 
     fun isConnectingTo(other: Position): Boolean {
         val t = other.tile
