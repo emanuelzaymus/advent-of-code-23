@@ -1,5 +1,6 @@
 package sk.emanuelzaymus.aoc23.day14
 
+import sk.emanuelzaymus.aoc23.day14.Direction.NORTH
 import java.io.File
 
 /**
@@ -8,15 +9,29 @@ import java.io.File
 private fun main() {
     val platformInput = File("data/day14.txt").readText()
 
-    val platformLoad = calculateTiltedPlatformLoad(platformInput)
+    val platformLoad = calculateTiltedNorthPlatformLoad(platformInput)
 
     println("Problem 1: $platformLoad") // 106186
+
+    val platformLoadAfterCycles = calculateTiltedPlatformLoad(platformInput, 10_000)
+
+    println("Problem 2: $platformLoadAfterCycles") // 106350 is too low !!!
 }
 
-fun calculateTiltedPlatformLoad(platformInput: String): Int {
+fun calculateTiltedNorthPlatformLoad(platformInput: String): Int {
     val platform = readPlatform(platformInput)
 
-    platform.tiltPlatformNorth()
+    platform.tiltPlatformInDirection(NORTH)
+
+    return platform.calculatePlatformLoad()
+}
+
+fun calculateTiltedPlatformLoad(platformInput: String, cycles: Int): Int {
+    val platform = readPlatform(platformInput)
+
+    repeat(cycles) {
+        platform.tiltWholeCycle()
+    }
 
     return platform.calculatePlatformLoad()
 }

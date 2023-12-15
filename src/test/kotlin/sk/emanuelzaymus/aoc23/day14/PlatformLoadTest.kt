@@ -3,25 +3,13 @@ package sk.emanuelzaymus.aoc23.day14
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import sk.emanuelzaymus.aoc23.day14.PlatformTest.Companion.initialPlatformInput
 
 class PlatformLoadTest {
 
     @Test
-    fun `calculateTiltedPlatformLoad - simple example - should return correct result`() {
-        val actual = calculateTiltedPlatformLoad(
-            """
-                O....#....
-                O.OO#....#
-                .....##...
-                OO.#O....O
-                .O.....O#.
-                O.#..O.#.#
-                ..O..#O..O
-                .......O..
-                #....###..
-                #OO..#....
-            """.trimIndent()
-        )
+    fun `calculateTiltedNorthPlatformLoad - simple example - should return correct result`() {
+        val actual = calculateTiltedNorthPlatformLoad(initialPlatformInput)
 
         assertEquals(136, actual)
     }

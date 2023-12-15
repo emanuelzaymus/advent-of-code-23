@@ -14,25 +14,37 @@ fun createPosition(char: Char): Position {
     return char
 }
 
-fun Platform.tiltPlatformNorth() {
+fun Platform.tiltPlatformInDirection(direction: Direction) {
     var wasMoved = true
 
     while (wasMoved) {
         wasMoved = false
 
-        for (x in 1..lastIndex) {
-            val row = this[x]
-
+        for ((x, row) in this.withIndex()) {
             for ((y, position) in row.withIndex()) {
-                if (position == ROCK && this[x - 1][y] == EMPTY) {
 
-                    this[x - 1][y] = ROCK
+                val swapX = direction.shiftX(x)
+                val swapY = direction.shiftY(y)
+
+                if (swapX !in indices || swapY !in row.indices) {
+                    continue
+                }
+
+                if (position == ROCK && this[swapX][swapY] == EMPTY) {
+
+                    this[swapX][swapY] = ROCK
                     this[x][y] = EMPTY
 
                     wasMoved = true
                 }
             }
         }
+    }
+}
+
+fun Platform.tiltWholeCycle() {
+    for (direction in Direction.entries) {
+        tiltPlatformInDirection(direction)
     }
 }
 

@@ -3,27 +3,30 @@ package sk.emanuelzaymus.aoc23.day14
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import sk.emanuelzaymus.aoc23.day14.Direction.NORTH
 
 class PlatformTest {
 
-    @Test
-    fun tiltPlatformNorth() {
-        val platform = readPlatform(
-            """
-                O....#....
-                O.OO#....#
-                .....##...
-                OO.#O....O
-                .O.....O#.
-                O.#..O.#.#
-                ..O..#O..O
-                .......O..
-                #....###..
-                #OO..#....
-            """.trimIndent()
-        )
+    companion object {
+        val initialPlatformInput = """
+            O....#....
+            O.OO#....#
+            .....##...
+            OO.#O....O
+            .O.....O#.
+            O.#..O.#.#
+            ..O..#O..O
+            .......O..
+            #....###..
+            #OO..#....
+        """.trimIndent()
+    }
 
-        platform.tiltPlatformNorth()
+    @Test
+    fun `tiltPlatformInDirection - north - should tilt all the rocks`() {
+        val platform = readPlatform(initialPlatformInput)
+
+        platform.tiltPlatformInDirection(NORTH)
 
         val expectedPlatform = """
             OOOO.#.O..
@@ -36,6 +39,76 @@ class PlatformTest {
             ..O.......
             #....###..
             #....#....
+        """.trimIndent()
+
+        assertEquals(expectedPlatform, platform.asString())
+    }
+
+    @Test
+    fun `tiltWholeCycle - tilt 1 cycle - should tilt correctly`() {
+        val platform = readPlatform(initialPlatformInput)
+
+        platform.tiltWholeCycle()
+
+        val expectedPlatform = """
+            .....#....
+            ....#...O#
+            ...OO##...
+            .OO#......
+            .....OOO#.
+            .O#...O#.#
+            ....O#....
+            ......OOOO
+            #...O###..
+            #..OO#....
+        """.trimIndent()
+
+        assertEquals(expectedPlatform, platform.asString())
+    }
+
+    @Test
+    fun `tiltWholeCycle - tilt 2 cycles - should tilt correctly`() {
+        val platform = readPlatform(initialPlatformInput)
+
+        repeat(2) {
+            platform.tiltWholeCycle()
+        }
+
+        val expectedPlatform = """
+            .....#....
+            ....#...O#
+            .....##...
+            ..O#......
+            .....OOO#.
+            .O#...O#.#
+            ....O#...O
+            .......OOO
+            #..OO###..
+            #.OOO#...O
+        """.trimIndent()
+
+        assertEquals(expectedPlatform, platform.asString())
+    }
+
+    @Test
+    fun `tiltWholeCycle - tilt 3 cycles - should tilt correctly`() {
+        val platform = readPlatform(initialPlatformInput)
+
+        repeat(3) {
+            platform.tiltWholeCycle()
+        }
+
+        val expectedPlatform = """
+            .....#....
+            ....#...O#
+            .....##...
+            ..O#......
+            .....OOO#.
+            .O#...O#.#
+            ....O#...O
+            .......OOO
+            #...O###.O
+            #.OOO#...O
         """.trimIndent()
 
         assertEquals(expectedPlatform, platform.asString())
@@ -63,22 +136,9 @@ class PlatformTest {
 
     @Test
     fun asString() {
-        val input = """
-            O....#....
-            O.OO#....#
-            .....##...
-            OO.#O....O
-            .O.....O#.
-            O.#..O.#.#
-            ..O..#O..O
-            .......O..
-            #....###..
-            #OO..#....
-        """.trimIndent()
+        val platform = readPlatform(initialPlatformInput)
 
-        val platform = readPlatform(input)
-
-        assertEquals(input, platform.asString())
+        assertEquals(initialPlatformInput, platform.asString())
     }
 
 }
