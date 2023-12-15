@@ -21,25 +21,31 @@ fun Platform.tiltPlatformInDirection(direction: Direction) {
         wasMoved = false
 
         for ((x, row) in this.withIndex()) {
-            for ((y, position) in row.withIndex()) {
+            for (y in row.indices) {
 
                 val swapX = direction.shiftX(x)
                 val swapY = direction.shiftY(y)
 
-                if (swapX !in indices || swapY !in row.indices) {
-                    continue
-                }
-
-                if (position == ROCK && this[swapX][swapY] == EMPTY) {
-
-                    this[swapX][swapY] = ROCK
-                    this[x][y] = EMPTY
-
-                    wasMoved = true
-                }
+                wasMoved = swapIfPossible(x, y, swapX, swapY) || wasMoved
             }
         }
     }
+}
+
+private fun Platform.swapIfPossible(x: Int, y: Int, swapX: Int, swapY: Int): Boolean {
+    if (swapX !in indices || swapY !in this[x].indices) {
+        return false
+    }
+
+    if (this[x][y] == ROCK && this[swapX][swapY] == EMPTY) {
+
+        this[swapX][swapY] = ROCK
+        this[x][y] = EMPTY
+
+        return true
+    }
+
+    return false
 }
 
 fun Platform.tiltWholeCycle() {
