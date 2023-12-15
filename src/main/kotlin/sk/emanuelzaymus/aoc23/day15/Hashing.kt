@@ -13,15 +13,19 @@ private fun main() {
     val hash = hashSequence(input)
 
     println("Problem 1: $hash") // 511343
+
+    val focusingPower = calculateFocusingPower(input)
+
+    println("Problem 2: $focusingPower") // 294474
 }
 
 fun hashSequence(inputSequence: String): Int {
     return inputSequence
         .splitToSequence(",")
-        .sumOf { hash(it) }
+        .sumOf { hash(it).toInt() }
 }
 
-fun hash(string: String): Int {
+fun hash(string: String): UByte {
     var currentValue = 0
 
     for (c in string) {
@@ -30,5 +34,24 @@ fun hash(string: String): Int {
         currentValue %= 256
     }
 
-    return currentValue
+    return currentValue.toUByte()
+}
+
+fun calculateFocusingPower(inputSequence: String): Int {
+    val boxes = List(256) { createBox() }
+
+    val instructions = inputSequence
+        .splitToSequence(',')
+        .map { Instruction.of(it) }
+
+    for (inst in instructions) {
+        when (inst.operation) {
+            Operation.ADD -> boxes[inst.boxIndex.toInt()].addInstruction(inst)
+            Operation.REMOVE -> boxes[inst.boxIndex.toInt()].removeInstruction(inst)
+        }
+    }
+
+    return boxes
+        .mapIndexed { i, box -> box.calculateFocusingPower(i) }
+        .sum()
 }
