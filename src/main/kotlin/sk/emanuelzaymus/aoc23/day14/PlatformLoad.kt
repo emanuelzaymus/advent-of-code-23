@@ -13,7 +13,7 @@ private fun main() {
 
     println("Problem 1: $platformLoad") // 106186
 
-    val platformLoadAfterCycles = calculateTiltedPlatformLoad(platformInput, 1000_000_000)
+    val platformLoadAfterCycles = calculateTiltedPlatformLoad(platformInput, 1_000_000_000)
 
     println("Problem 2: $platformLoadAfterCycles") // 106390
 }
