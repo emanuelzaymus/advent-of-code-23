@@ -5,19 +5,6 @@ import sk.emanuelzaymus.aoc23.day16.Tile.*
 
 typealias Contraption = Array<Array<Position>>
 
-fun Contraption.energizeTiles() {
-    val startPosition = this[0][0]
-    val startDirection = RIGHTWARD
-
-    energizeStartPosition(startPosition, startDirection)
-}
-
-private fun Contraption.energizeStartPosition(startPosition: Position, startDirection: Direction) {
-    startPosition.isEnergized = true
-
-    energizeNextPosition(startPosition, startDirection)
-}
-
 private val upward = arrayOf(UPWARD)
 private val downward = arrayOf(DOWNWARD)
 private val rightward = arrayOf(RIGHTWARD)
@@ -25,8 +12,21 @@ private val leftward = arrayOf(LEFTWARD)
 private val upwardAndDownward = arrayOf(UPWARD, DOWNWARD)
 private val rightwardAndLeftward = arrayOf(RIGHTWARD, LEFTWARD)
 
-private fun Contraption.energizeNextPosition(position: Position, direction: Direction) {
-    val nextPosition = getPositionInDirection(position, direction) ?: return
+fun Contraption.energizeTiles() {
+    val startPosition = this[0][0]
+    val startDirection = RIGHTWARD
+
+    energizeNextPosition(startPosition, startDirection, isStartPosition = true)
+}
+
+private fun Contraption.energizeNextPosition(
+    position: Position,
+    direction: Direction,
+    isStartPosition: Boolean = false
+) {
+    val nextPosition =
+        if (isStartPosition) position
+        else getPositionInDirection(position, direction) ?: return
 
     if (direction in nextPosition.movedInDirections) {
         return

@@ -10,7 +10,7 @@ private fun main() {
 
     val energizedTiles = numberOfEnergizedTiles(input)
 
-    println("Problem 1: $energizedTiles") //
+    println("Problem 1: $energizedTiles") // 7236
 }
 
 fun numberOfEnergizedTiles(contraptionInput: String): Int {
