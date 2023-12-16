@@ -12,9 +12,25 @@ private val leftward = arrayOf(LEFTWARD)
 private val upwardAndDownward = arrayOf(UPWARD, DOWNWARD)
 private val rightwardAndLeftward = arrayOf(RIGHTWARD, LEFTWARD)
 
-fun Contraption.energizeTiles() {
-    val startPosition = this[0][0]
-    val startDirection = RIGHTWARD
+fun Contraption.restartAllEnergizedTiles() {
+    forEach { row ->
+        row.forEach { position ->
+            position.isEnergized = false
+            position.movedInDirections.clear()
+        }
+    }
+}
+
+fun Contraption.energizeTilesFromTopLeftCorner() {
+    energizeTilesFromPosition(0, 0, RIGHTWARD)
+}
+
+fun Contraption.energizeTilesFromPosition(x: Int, y: Int, startDirection: Direction) {
+    check((x == 0 || x == lastIndex) || (y == 0 || y == this[x].lastIndex)) {
+        "Position ($x, $y) is not on the edge of the contraption."
+    }
+
+    val startPosition = this[x][y]
 
     energizeNextPosition(startPosition, startDirection, isStartPosition = true)
 }
