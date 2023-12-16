@@ -15,7 +15,7 @@ private fun main() {
 
     val mostEnergizedTiles = numberOfEnergizedTilesWithBestConfiguration(input)
 
-    println("Problem 2: $mostEnergizedTiles") //
+    println("Problem 2: $mostEnergizedTiles") // 7521
 }
 
 fun numberOfEnergizedTiles(contraptionInput: String): Int {

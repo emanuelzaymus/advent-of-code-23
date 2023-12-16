@@ -87,7 +87,9 @@ private fun Contraption.energizeNextPosition(
         }
     }
 
-    nextDirections.forEach { energizeNextPosition(nextPosition, it) }
+    nextDirections.forEach {
+        energizeNextPosition(nextPosition, it)
+    }
 }
 
 private fun Contraption.getPositionInDirection(position: Position, direction: Direction): Position? {
