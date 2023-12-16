@@ -7,5 +7,12 @@ data class Position(
     var isEnergized: Boolean = false,
     val movedInDirections: MutableSet<Direction> = mutableSetOf()
 ) {
+
     constructor(char: Char, x: Int, y: Int) : this(Tile.of(char), x, y)
+
+    fun restart() {
+        isEnergized = false
+        movedInDirections.clear()
+    }
+
 }
