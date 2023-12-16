@@ -28,7 +28,12 @@ private val rightwardAndLeftward = arrayOf(RIGHTWARD, LEFTWARD)
 private fun Contraption.energizeNextPosition(position: Position, direction: Direction) {
     val nextPosition = getPositionInDirection(position, direction) ?: return
 
+    if (direction in nextPosition.movedInDirections) {
+        return
+    }
+
     nextPosition.isEnergized = true
+    nextPosition.movedInDirections += direction
 
     val nextDirections: Array<Direction> = when (nextPosition.tile) {
         // Tile .
