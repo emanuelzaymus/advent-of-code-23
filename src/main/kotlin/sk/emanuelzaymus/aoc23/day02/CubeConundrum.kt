@@ -11,6 +11,10 @@ private fun main() {
     val gameIdsSum = calculatePossibleGameIdsSum(lines, maxRedCubes = 12, macGreenCubes = 13, macBlueCubes = 14)
 
     println("Problem 1: $gameIdsSum") // 2377
+
+    val sumOfCubeSetsPowers = calculateSumOfCubeSetsPowers(lines)
+
+    println("Problem 2: $sumOfCubeSetsPowers") // 71220
 }
 
 fun calculatePossibleGameIdsSum(lines: List<String>, maxRedCubes: Int, macGreenCubes: Int, macBlueCubes: Int): Int {
@@ -28,7 +32,17 @@ fun calculatePossibleGameIdsSum(lines: List<String>, maxRedCubes: Int, macGreenC
         .sumOf { it.gameNumber }
 }
 
+fun calculateSumOfCubeSetsPowers(lines: List<String>): Int {
+    return lines
+        .map { Game.parse(it) }
+        .sumOf { it.calculatePowerOfCubeSets() }
+}
+
 private data class Game(val gameNumber: Int, val cubeSets: List<CubeSet>) {
+    fun calculatePowerOfCubeSets(): Int = with(cubeSets) {
+        maxOf { it.redCubes } * maxOf { it.greenCubes } * maxOf { it.blueCubes }
+    }
+
     companion object {
         fun parse(line: String) = Game(parseGameNumber(line), parseCubeSets(line))
 
