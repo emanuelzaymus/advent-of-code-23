@@ -28,7 +28,7 @@ fun calculatePossibleGameIdsSum(lines: List<String>, maxRedCubes: Int, macGreenC
         .sumOf { it.gameNumber }
 }
 
-data class Game(val gameNumber: Int, val cubeSets: List<CubeSet>) {
+private data class Game(val gameNumber: Int, val cubeSets: List<CubeSet>) {
     companion object {
         fun parse(line: String) = Game(parseGameNumber(line), parseCubeSets(line))
 
@@ -44,7 +44,7 @@ data class Game(val gameNumber: Int, val cubeSets: List<CubeSet>) {
     }
 }
 
-data class CubeSet(val redCubes: Int, val greenCubes: Int, val blueCubes: Int) {
+private data class CubeSet(val redCubes: Int, val greenCubes: Int, val blueCubes: Int) {
     companion object {
         fun parse(cubeSetLine: String): CubeSet {
             var reds = 0
