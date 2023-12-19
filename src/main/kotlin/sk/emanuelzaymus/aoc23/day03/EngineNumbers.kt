@@ -73,15 +73,16 @@ private class Engine(private val lines: List<String>) {
             .sum()
 
     private fun getGearRatios(): Sequence<Int> = sequence {
-        lines.forEachIndexed { x, row ->
-            row.forEachIndexed { y, char ->
+        for ((x, row) in lines.withIndex()) {
+            for ((y, char) in row.withIndex()) {
 
-                if (isGear(char)) {
-                    val adjacentNumbers = getAllAdjacentNumbers(x, y)
+                if (!isGear(char)) {
+                    continue
+                }
+                val adjacentNumbers = getAllAdjacentNumbers(x, y)
 
-                    if (adjacentNumbers.size == 2) {
-                        yield(adjacentNumbers.product())
-                    }
+                if (adjacentNumbers.size == 2) {
+                    yield(adjacentNumbers.product())
                 }
             }
         }
