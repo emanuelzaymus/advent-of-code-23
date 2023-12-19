@@ -4,7 +4,7 @@ import sk.emanuelzaymus.aoc23.util.product
 import java.io.File
 
 /**
- * https://adventofcode.com/2023/day/2
+ * https://adventofcode.com/2023/day/3
  */
 private fun main() {
     val input = File("data/day03.txt").readText()
