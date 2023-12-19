@@ -1,5 +1,6 @@
 package sk.emanuelzaymus.aoc23.day03
 
+import sk.emanuelzaymus.aoc23.util.product
 import java.io.File
 
 /**
@@ -11,12 +12,20 @@ private fun main() {
     val sumOfNumbers = sumOfSymbolAdjacentNumbers(input)
 
     println("Problem 1: $sumOfNumbers") // 527446
+
+    val sumOfGearRatios = sumOfGearRatios(input)
+
+    println("Problem 2: $sumOfGearRatios") // 73201705
 }
 
 fun sumOfSymbolAdjacentNumbers(input: String): Int {
-    val engine = readEngine(input)
+    return readEngine(input)
+        .sumOfSymbolAdjacentNumbers()
+}
 
-    return engine.sumOfSymbolAdjacentNumbers()
+fun sumOfGearRatios(input: String): Int {
+    return readEngine(input)
+        .sumOfGearRatios()
 }
 
 private fun readEngine(input: String): Engine {
@@ -58,6 +67,47 @@ private class Engine(private val lines: List<String>) {
             .flatMap { it }
             .filter { it.isAdjacentToSymbol() }
             .sumOf { it.number }
+
+    fun sumOfGearRatios(): Int =
+        getGearRatios()
+            .sum()
+
+    private fun getGearRatios(): Sequence<Int> = sequence {
+        lines.forEachIndexed { x, row ->
+            row.forEachIndexed { y, char ->
+
+                if (isGear(char)) {
+                    val adjacentNumbers = getAllAdjacentNumbers(x, y)
+
+                    if (adjacentNumbers.size == 2) {
+                        yield(adjacentNumbers.product())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isGear(char: Char): Boolean = char == '*'
+
+    private fun getAllAdjacentNumbers(x: Int, y: Int): List<Int> = buildList {
+        val yRange = y - 1..y + 1
+
+        if (x > 0) {
+            addAll(getOverlappingNumbers(numberWithIndices[x - 1], yRange))
+        }
+
+        addAll(getOverlappingNumbers(numberWithIndices[x], yRange))
+
+        if (x < lines.lastIndex) {
+            addAll(getOverlappingNumbers(numberWithIndices[x + 1], yRange))
+        }
+    }
+
+    private fun getOverlappingNumbers(numbers: List<NumberWithIndices>, yRange: IntRange): List<Int> {
+        return numbers
+            .filter { it.yRange.any { y -> y in yRange } }
+            .map { it.number }
+    }
 
     private fun NumberWithIndices.isAdjacentToSymbol(): Boolean {
         for (x in x - 1..x + 1) {
