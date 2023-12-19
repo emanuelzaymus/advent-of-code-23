@@ -10,7 +10,7 @@ private fun main() {
 
     val sumOfNumbers = sumOfSymbolAdjacentNumbers(input)
 
-    println("Problem 1: $sumOfNumbers") //
+    println("Problem 1: $sumOfNumbers") // 527446
 }
 
 fun sumOfSymbolAdjacentNumbers(input: String): Int {
@@ -41,12 +41,12 @@ private class Engine(private val lines: List<String>) {
                     }
                     var yToIndex = yFromIndex
 
-                    while (line.length > yToIndex + 1 && line[yToIndex + 1].isDigit()) {
+                    while (yToIndex + 1 < line.length && line[yToIndex + 1].isDigit()) {
                         yToIndex++
                     }
                     val number = line.substring(yFromIndex..yToIndex).toInt()
 
-                    add(NumberWithIndices(number, x, yFromIndex..yToIndex))
+                    this += NumberWithIndices(number, x, yFromIndex..yToIndex)
                     yFromIndex = yToIndex + 1
                 }
             }
@@ -60,33 +60,15 @@ private class Engine(private val lines: List<String>) {
             .sumOf { it.number }
 
     private fun NumberWithIndices.isAdjacentToSymbol(): Boolean {
-        val yFrom = if (yRange.first > 0) yRange.first - 1 else yRange.first
-        val yTo = if (yRange.last < lines[x].lastIndex) yRange.last + 1 else yRange.last
-
-        if (x > 0) {
-            val top = lines[x - 1].substring(yFrom..yTo)
-
-            if (top.any(::isSymbol)) {
-                return true
+        for (x in x - 1..x + 1) {
+            for (y in yRange.first - 1..yRange.last + 1) {
+                if (isSymbolSafe(x, y)) {
+                    return true
+                }
             }
         }
-
-        if (isSymbol(lines[x][yFrom]) || isSymbol(lines[x][yTo])) {
-            return true
-        }
-
-        if (x < lines.lastIndex) {
-            val bottom = lines[x + 1].substring(yFrom..yTo)
-
-            if (bottom.any(::isSymbol)) {
-                return true
-            }
-        }
-
         return false
     }
-
-    private fun isSymbol(char: Char): Boolean = char != '.' && !char.isDigit()
 
     private fun isSymbolSafe(x: Int, y: Int): Boolean {
         if (x < 0 || x > lines.lastIndex) {
@@ -97,6 +79,8 @@ private class Engine(private val lines: List<String>) {
         }
         return isSymbol(lines[x][y])
     }
+
+    private fun isSymbol(char: Char): Boolean = char != '.' && !char.isDigit()
 
 }
 
