@@ -11,6 +11,10 @@ private fun main() {
     val stepCount = countStepsToReachEndDestination(input)
 
     println("Problem 1: $stepCount") // 12643
+
+    val stepCountFromAllStartPositions = countStepsToReachEndDestinationsFromAllStartPositions(input)
+
+    println("Problem 2: $stepCountFromAllStartPositions") // 445
 }
 
 private const val LEFT_DIRECTION = 'L'
@@ -42,6 +46,37 @@ fun countStepsToReachEndDestination(input: String): Int {
     return stepCounter
 }
 
+fun countStepsToReachEndDestinationsFromAllStartPositions(input: String): Int {
+    val instructions = readInstructions(input)
+    val destinationPairs = readDestinationPairs(input)
+
+    val allCurrentPosition = findAllStartPositions(destinationPairs)
+    var stepCounter = 0
+
+    while (allCurrentPosition.any { !it.isEndPosition() }) {
+        val instruction = instructions[stepCounter % instructions.length]
+
+        for ((index, currentPosition) in allCurrentPosition.withIndex()) {
+
+            allCurrentPosition[index] =
+                when (instruction) {
+                    LEFT_DIRECTION -> destinationPairs.first { it.position == currentPosition.leftDirection }
+                    RIGHT_DIRECTION -> destinationPairs.first { it.position == currentPosition.rightDirection }
+                    else -> error("Invalid instruction: $instruction")
+                }
+        }
+        stepCounter++
+    }
+
+    return stepCounter
+}
+
+private fun findAllStartPositions(destinationPairs: List<DirectionPair>): MutableList<DirectionPair> {
+    return destinationPairs
+        .filter { it.isStartPosition() }
+        .toMutableList()
+}
+
 private fun readInstructions(input: String): String = input.lineSequence().first()
 
 private fun readDestinationPairs(input: String): List<DirectionPair> {
@@ -56,4 +91,7 @@ private fun readDestinationPairs(input: String): List<DirectionPair> {
         .toList()
 }
 
-private data class DirectionPair(val position: String, val leftDirection: String, val rightDirection: String)
+private data class DirectionPair(val position: String, val leftDirection: String, val rightDirection: String) {
+    fun isStartPosition(): Boolean = position.endsWith('A')
+    fun isEndPosition(): Boolean = position.endsWith('Z')
+}
