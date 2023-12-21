@@ -46,22 +46,23 @@ fun countStepsToReachEndDestination(input: String): Int {
     return stepCounter
 }
 
-fun countStepsToReachEndDestinationsFromAllStartPositions(input: String): Int {
+fun countStepsToReachEndDestinationsFromAllStartPositions(input: String): Long {
     val instructions = readInstructions(input)
-    val destinationPairs = readDestinationPairs(input)
+    val positionDestinationPairs: Map<String, DirectionPair> = readDestinationPairsMap(input)
 
-    val allCurrentPosition = findAllStartPositions(destinationPairs)
-    var stepCounter = 0
+    val allCurrentPosition: MutableList<DirectionPair> = findAllStartPositions(positionDestinationPairs.values)
+    var stepCounter: Long = 0
 
     while (allCurrentPosition.any { !it.isEndPosition() }) {
-        val instruction = instructions[stepCounter % instructions.length]
+        val instructionIndex = (stepCounter % instructions.length).toInt()
+        val instruction = instructions[instructionIndex]
 
-        for ((index, currentPosition) in allCurrentPosition.withIndex()) {
+        for ((index, currentPosition: DirectionPair) in allCurrentPosition.withIndex()) {
 
             allCurrentPosition[index] =
                 when (instruction) {
-                    LEFT_DIRECTION -> destinationPairs.first { it.position == currentPosition.leftDirection }
-                    RIGHT_DIRECTION -> destinationPairs.first { it.position == currentPosition.rightDirection }
+                    LEFT_DIRECTION -> positionDestinationPairs.getValue(currentPosition.leftDirection)
+                    RIGHT_DIRECTION -> positionDestinationPairs.getValue(currentPosition.rightDirection)
                     else -> error("Invalid instruction: $instruction")
                 }
         }
@@ -71,7 +72,7 @@ fun countStepsToReachEndDestinationsFromAllStartPositions(input: String): Int {
     return stepCounter
 }
 
-private fun findAllStartPositions(destinationPairs: List<DirectionPair>): MutableList<DirectionPair> {
+private fun findAllStartPositions(destinationPairs: Collection<DirectionPair>): MutableList<DirectionPair> {
     return destinationPairs
         .filter { it.isStartPosition() }
         .toMutableList()
@@ -89,6 +90,11 @@ private fun readDestinationPairs(input: String): List<DirectionPair> {
             DirectionPair(position, leftDirection, rightDirection)
         }
         .toList()
+}
+
+private fun readDestinationPairsMap(input: String): Map<String, DirectionPair> {
+    return readDestinationPairs(input)
+        .associateBy { it.position }
 }
 
 private data class DirectionPair(val position: String, val leftDirection: String, val rightDirection: String) {
